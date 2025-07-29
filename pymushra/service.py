@@ -2,6 +2,7 @@ from __future__ import division, absolute_import, print_function
 
 import os
 import json
+import ipaddress
 import pickle
 from flask import Flask, request, send_from_directory, send_file, \
     render_template, redirect, url_for, abort
@@ -21,11 +22,17 @@ app = Flask(__name__)
 def only_admin_allowlist(f):
     @wraps(f)
     def wrapped(*args, **kwargs):
-        if request.remote_addr in app.config['admin_allowlist']:
+        if any(ip_match(request.remote_addr, network) for network in app.config['admin_allowlist']):
             return f(*args, **kwargs)
         else:
             return abort(403)
     return wrapped
+
+
+def ip_match(remote_addr, network):
+    remote_addr = ipaddress.ip_address(remote_addr)
+    network = ipaddress.ip_network(network)
+    return remote_addr in network
 
 
 @app.route('/')
