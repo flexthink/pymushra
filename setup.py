@@ -28,7 +28,8 @@ if __name__ == "__main__":
             'tinyrecord',
             'pytest',
             'click',
-            "bcrypt"
+            "bcrypt",
+            "Flask-HTTPAuth"
         ],
 
         entry_points={'console_scripts': [
