@@ -34,11 +34,11 @@ def only_admin_allowlist(f):
     @wraps(f)
     def wrapped(*args, **kwargs):
         if any(ip_match(request.remote_addr, network) for network in app.config['admin_allowlist']):
+            if app.config["admin_auth"]:
+                f = auth.login_required(f)
             return f(*args, **kwargs)
         else:
             return abort(403)
-    if app.config["admin_auth"]:
-        wrapped = auth.login_required(wrapped)
     return wrapped
 
 
