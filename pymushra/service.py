@@ -26,7 +26,12 @@ auth = HTTPBasicAuth()
 
 @auth.verify_password
 def verify_password(username, password):
-    if username == "admin" and bcrypt.checkpw(password, app.config["admin_password"]):
+    if (
+        username == "admin"
+        and bcrypt.checkpw(
+            password.encode("utf-8"), app.config["admin_password"].encode("utf-8")
+        )
+    ):
         return username
 
 
