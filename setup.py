@@ -28,6 +28,7 @@ if __name__ == "__main__":
             'tinyrecord',
             'pytest',
             'click',
+            "bcrypt"
         ],
 
         entry_points={'console_scripts': [
