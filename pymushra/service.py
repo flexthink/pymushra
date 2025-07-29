@@ -4,10 +4,13 @@ import os
 import json
 import ipaddress
 import pickle
+import bcrypt
 from flask import Flask, request, send_from_directory, send_file, \
     render_template, redirect, url_for, abort
 from tinyrecord import transaction
 from functools import wraps
+from flask_httpauth import HTTPBasicAuth
+
 
 from . import stats, casting, utils
 
@@ -18,6 +21,14 @@ except ImportError:
     from StringIO import StringIO
 
 app = Flask(__name__)
+auth = HTTPBasicAuth()
+
+
+@auth.verify_password
+def verify_password(username, password):
+    if username == "admin" and bcrypt.checkpw(password, app.config["admin_password"]):
+        return username
+
 
 def only_admin_allowlist(f):
     @wraps(f)
@@ -26,6 +37,8 @@ def only_admin_allowlist(f):
             return f(*args, **kwargs)
         else:
             return abort(403)
+    if app.config["admin_auth"]:
+        wrapped = auth.login_required(wrapped)
     return wrapped
 
 
