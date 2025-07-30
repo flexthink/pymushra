@@ -23,6 +23,8 @@ dependencies = [
     "statsmodels",
     "tinydb>=3.0.0",
     "tinyrecord",
+    "bcrypt",
+    "Flask-HTTPAuth"
 ]
 
 [project.scripts]
